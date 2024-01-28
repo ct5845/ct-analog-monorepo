@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@ct-analog-monorepo/libOne": ["libraries/libOne/src/index.ts"],
+      "@ct-analog-monorepo/libThree": ["libraries/libThree/src/index.ts"],
+      "@ct-analog-monorepo/libTwo": ["libraries/libTwo/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
