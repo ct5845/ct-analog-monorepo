@@ -1,55 +1,34 @@
-Steps taken
+Reproduction of secondary entry points behaviour in AnalogJS.
 
-```
-npx create-nx-workspace@latest ct-analog-monorepo --preset=angular-monorepo // delete nx created angular app
-npm i -D @analogjs/platform
-npx nx g @analogjs/platform:app analog-app
-```
+Error seems to occur when index.ts is moved "up" a directory, from /src to the source root.
+This is required(?) in order to change the paths from;
 
-```
-npm i --force 
-```
-Had to force install because of this error (have also tried updating package.json versions but error end error still persits):
-```
-npm WARN While resolving: @nx/vite@17.2.8
-npm WARN Found: vite@4.5.2
-npm WARN node_modules/vite
-npm WARN   dev vite@"^4.4.8" from the root project
-```
+``````
+      "@ct-analog-monorepo/libThree": ["libraries/libThree/src/index.ts"],
+      "@ct-analog-monorepo/libThree/HelloWorldB": [
+        "libraries/libThree/HelloWorldB/src/index.ts"
+      ],
+``````
+to
 
-Create library and simple component
-```
-nx g @nx/angular:library --name=libOne --directory=libraries/libOne --projectNameAndRootFormat=as-provided --no-interactive
-```
+````
+      "@ct-analog-monorepo/libFour": ["libraries/libFour"],
+      "@ct-analog-monorepo/libFour/*": ["libraries/libFour/*"],
+````
 
-Update (home.page.ts)
+# Apps
+
+#### NX-App (Standard Angular)
+
+```angular2html
+nx run nx-app:serve:development
 ```
-import { Component } from '@angular/core';
-import { AnalogWelcomeComponent } from './analog-welcome.component';
-import { LibOneComponent } from '@ct-analog-monorepo/libOne';
+All four libraries successfully load, and 3 of the sub entry points load too.
 
 
-@Component({
-  selector: 'analog-app-home',
-  standalone: true,
-  imports: [ AnalogWelcomeComponent, LibOneComponent ],
-  template: `<ct-analog-monorepo-lib-one> </ct-analog-monorepo-lib-one>`,
-})
-export default class HomeComponent {}
-
-```
-
-On running
-
-```
+#### Analog-App (Vite)
+```angular2html
 nx run analog-app:serve:development
 ```
 
-For a instant you can see the `<p>libOne works!</p>` message but then it disappears and an error in the console of;
-
-```
-ERROR RuntimeError: NG04002: Cannot match any routes. URL Segment: '@fs/<my-source>/ct-analog-monorepo/libraries/src/index.ts'
-
-```
-
-Appears, this also happens when the library happens to buildable or publishable.
+First 3 libraries (and 2 sub entry points) load successfully but it errors on the fourth library. 
